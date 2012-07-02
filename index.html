@@ -1,0 +1,265 @@
+<!doctype html>
+
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en"> <!--<![endif]-->
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+
+  <title>Carousel Widget Class</title>
+
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+  
+  <link rel="stylesheet" href="/_ui/css/main.css">
+
+  <script src="_ui/js/lib/modernizr-2.5.3.js"></script>
+
+</head>
+
+<body>
+  <!--[if lt IE 8]><p class=chromeframe>Your browser is <em>ancient!</em> <a href="http://browsehappy.com/">Upgrade to a different browser</a> or <a href="http://www.google.com/chromeframe/?redirect=true">install Google Chrome Frame</a> to experience this site.</p><![endif]-->
+
+  <div id="container">
+    <header id="header">
+      <h1>Carousel Widget Class</h1>
+    </header>
+
+    <div role="main">
+      
+      <div class="example">
+        <h4>Infinite auto rotate carousel with grouping, prev/next buttons, no pagination</h4>
+        <p>Carousel rotates on its own, until the user interacts with it. Rotating is paused on window blur. You can move in either direction infinitely. Numeric pagination not recommended for infinite carousels, as it creates a strange user experience.</p>
+        <ul id="infiniteCarousel" class="carousel">
+          <li>
+            <img src="http://lorempixel.com/290/290?id=1" alt="" />
+            <p class="caption">Image caption</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/290/290?id=2" alt="" />
+            <p class="caption">Stuff</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/290/290?id=3" alt="" />
+            <p class="caption">Red Shiny Balloons</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/290/290?id=4" alt="" />
+            <p class="caption">Something Exciting</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/290/290?id=5" alt="" />
+            <p class="caption">Pleasing Visions</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/290/290?id=6" alt="" />
+            <p class="caption">Something Colorful</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/290/290?id=7" alt="" />
+            <p class="caption">Photograph.</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/290/290?id=8" alt="" />
+            <p class="caption">Androids</p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="example">
+        <h4>Finite carousel with pagination and grouping</h4>
+        <p>No auto rotation. Slides are grouped into sets of how ever many are visible in the viewport. Navigation moves the slides in sets, and counts for sets instead of individual slides. When you run out of slides in one direction, a 'disabled' class is added to prev/next arrows accordingly.</p>
+        <ul id="carouselWithGrouping" class="carousel">
+          <li>
+            <img src="http://lorempixel.com/170/170?id=1" alt="" />
+            <p class="caption">Image caption</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/170/170?id=2" alt="" />
+            <p class="caption">Stuff</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/170/170?id=3" alt="" />
+            <p class="caption">Red Shiny Balloons</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/170/170?id=4" alt="" />
+            <p class="caption">Something Exciting</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/170/170?id=5" alt="" />
+            <p class="caption">Pleasing Visions</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/170/170?id=6" alt="" />
+            <p class="caption">Something Colorful</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/170/170?id=7" alt="" />
+            <p class="caption">Photograph.</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/170/170?id=8" alt="" />
+            <p class="caption">Androids</p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="example" style="width:700px;">
+        <h4>Finite carousel with pagination and no grouping</h4>
+        <p>More than one slide is visible at a time, but navigation acts on only one slide at a time, and pagination counts each slide. Since more than one slide is visible, an 'active' class is applied to each visible slide in the pagination.</p>
+        <ul id="carouselWithNoGrouping" class="carousel">
+          <li>
+            <img src="http://lorempixel.com/340/170?id=1" alt="" />
+            <p class="caption">Image caption</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/340/170?id=2" alt="" />
+            <p class="caption">Stuff</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/340/170?id=3" alt="" />
+            <p class="caption">Red Shiny Balloons</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/340/170?id=4" alt="" />
+            <p class="caption">Something Exciting</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/340/170?id=5" alt="" />
+            <p class="caption">Pleasing Visions</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/340/170?id=6" alt="" />
+            <p class="caption">Something Colorful</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/340/170?id=7" alt="" />
+            <p class="caption">Photograph.</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/340/170?id=8" alt="" />
+            <p class="caption">Androids</p>
+          </li>
+        </ul>
+      </div>
+
+      <div class="example" style="width: 400px;">
+        <h4>Finite carousel with pagination and grouping</h4>
+        <p>Specify a function to be called before a slide change happens, and one for after the slide change is finished.</p>
+        <ul id="carouselWithCallbacks" class="carousel">
+          <li>
+            <img src="http://lorempixel.com/400/170?id=1" alt="" />
+            <p class="caption">Image caption</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/400/170?id=2" alt="" />
+            <p class="caption">Stuff</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/400/170?id=3" alt="" />
+            <p class="caption">Red Shiny Balloons</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/400/170?id=4" alt="" />
+            <p class="caption">Something Exciting</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/400/170?id=5" alt="" />
+            <p class="caption">Pleasing Visions</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/400/170?id=6" alt="" />
+            <p class="caption">Something Colorful</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/400/170?id=7" alt="" />
+            <p class="caption">Photograph.</p>
+          </li>
+          <li>
+            <img src="http://lorempixel.com/400/170?id=8" alt="" />
+            <p class="caption">Androids</p>
+          </li>
+        </ul>
+      </div>
+
+    </div>
+
+    <footer id="footer">
+    </footer>
+  </div>
+
+
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
+
+  <script src="/_ui/js/lib/jquery.easing.1.3.js"></script>
+  <script src="/_ui/js/carousel.js"></script>
+
+  <script>
+    $(function(){
+
+      var infiniteCarousel = new DK.Carousel($('#infiniteCarousel'), {
+        visibleItems: 3,
+        slideWidth: 290,
+        slideHeight: 320, 
+        slideSpacing: 10,
+        pagination: false,
+        transitionSpeed: 700,
+        infinite: true,
+        auto: true
+      });
+
+      var carouselWithGrouping = new DK.Carousel($('#carouselWithGrouping'), {
+        visibleItems: 5,
+        slideWidth: 170,
+        slideHeight: 210, 
+        slideSpacing: 10,
+        prevNextButtons: true,
+        pagination: true,
+        transitionSpeed: 400,
+        infinite: false
+      });
+
+      var carouselWithNoGrouping = new DK.Carousel($('#carouselWithNoGrouping'), {
+        visibleItems: 2,
+        slideWidth: 340,
+        slideHeight: 210, 
+        slideSpacing: 10,
+        pagination: true,
+        prevNextButtons: true,
+        transitionSpeed: 400,
+        groupSlides: false,
+        infinite: false
+      });
+
+      var callbackTestEl = $('<div class="callbackTestEl">Hello</div>');
+
+      var carouselWithCallbacks = new DK.Carousel($('#carouselWithCallbacks'), {
+        visibleItems: 1,
+        slideWidth: 400,
+        slideHeight: 200, 
+        slideSpacing: 0,
+        prevNextButtons: true,
+        pagination: true,
+        transitionSpeed: 400,
+        infinite: false,
+        beforeSlideChange: function(index, prevIndex, nextFn){ // note, need to call next function in chain (nextFn)
+          carouselWithCallbacks.slides.eq(prevIndex).find(callbackTestEl).fadeOut(300, function(){
+            callbackTestEl.remove();
+          });
+          nextFn();
+        },
+        afterSlideChange: function(index){
+          carouselWithCallbacks.slides.eq(index).append(callbackTestEl);
+          callbackTestEl.hide().fadeIn(300);
+        }
+      });
+
+    });
+  </script>
+</body>
+</html>
