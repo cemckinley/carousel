@@ -71,7 +71,7 @@ DK.Carousel.prototype = {
 	 */
 	setupSlides: function(){
 		var wrapperCss = {
-				'width': this.totalSlides <= this.options.visibleItems ? (this.totalSlides * this.options.slideWidth) + (this.totalSlides * this.options.slideSpacing) + 'px' : (this.options.visibleItems * this.options.slideWidth) + (this.options.visibleItems * this.options.slideSpacing) +  'px',
+				'width': this.totalSlides <= this.options.visibleItems ? (this.totalSlides * this.options.slideWidth) + ((this.totalSlides - 1) * this.options.slideSpacing) + 'px' : (this.options.visibleItems * this.options.slideWidth) + ((this.options.visibleItems - 1) * this.options.slideSpacing) +  'px',
 				'height': this.options.slideHeight + 'px',
 				'position': 'relative',
 				'overflow': 'hidden'
@@ -80,7 +80,8 @@ DK.Carousel.prototype = {
 				'width': (this.totalSlides * this.options.slideWidth) + (this.totalSlides * this.options.slideSpacing) + 'px',
 				'height': this.options.slideHeight + 'px',
 				'overflow': 'hidden',
-				'position': 'absolute'
+				'position': 'absolute',
+				'left': (-this.options.slideSpacing/2) + 'px'
 			},
 			slideCss = {
 				// 'display':'block',
@@ -120,7 +121,7 @@ DK.Carousel.prototype = {
 		}
 		
 		this.containerList.css({
-			'left': (this.options.slideWidth + this.options.slideSpacing) * this.options.visibleItems * -1 + 'px',
+			'left': ((this.options.slideWidth + this.options.slideSpacing) * this.options.visibleItems * -1) - (this.options.slideSpacing / 2) + 'px',
 			'width': ((this.totalSlides + (this.options.visibleItems * 2)) * this.options.slideWidth) + ((this.totalSlides + (this.options.visibleItems * 2)) * this.options.slideSpacing) + 'px'
 		});
 		
@@ -361,7 +362,7 @@ DK.Carousel.prototype = {
 	animateSlide: function(slideIndex){
 		var self = this;
 		
-		var newXCoord = ((this.options.slideWidth + this.options.slideSpacing) * slideIndex * -1) + 'px';
+		var newXCoord = ((this.options.slideWidth + this.options.slideSpacing) * slideIndex * -1) - (this.options.slideSpacing / 2) + 'px';
 		this.containerList.animate({
 			left: newXCoord
 		}, this.options.transitionSpeed, this.options.slideEasing, function(){
