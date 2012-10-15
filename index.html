@@ -14,7 +14,7 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width">
   
-  <link rel="stylesheet" href="/_ui/css/main.css">
+  <link rel="stylesheet" href="_ui/css/main.css">
 
   <script src="_ui/js/lib/modernizr-2.5.3.js"></script>
 
@@ -193,16 +193,16 @@
   </div>
 
 
-  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
 
-  <script src="/_ui/js/lib/jquery.easing.1.3.js"></script>
-  <script src="/_ui/js/carousel.js"></script>
+  <script src="_ui/js/lib/jquery.easing.1.3.js"></script>
+  <script src="_ui/js/carousel.js"></script>
 
   <script>
     $(function(){
 
-      var infiniteCarousel = new DK.Carousel($('#infiniteCarousel'), {
+      var infiniteCarousel = new Carousel($('#infiniteCarousel'), {
         visibleItems: 3,
         slideWidth: 290,
         slideHeight: 320, 
@@ -213,7 +213,7 @@
         auto: true
       });
 
-      var carouselWithGrouping = new DK.Carousel($('#carouselWithGrouping'), {
+      var carouselWithGrouping = new Carousel($('#carouselWithGrouping'), {
         visibleItems: 5,
         slideWidth: 170,
         slideHeight: 210, 
@@ -224,7 +224,7 @@
         infinite: false
       });
 
-      var carouselWithNoGrouping = new DK.Carousel($('#carouselWithNoGrouping'), {
+      var carouselWithNoGrouping = new Carousel($('#carouselWithNoGrouping'), {
         visibleItems: 2,
         slideWidth: 340,
         slideHeight: 210, 
@@ -238,7 +238,7 @@
 
       var callbackTestEl = $('<div class="callbackTestEl">Hello</div>');
 
-      var carouselWithCallbacks = new DK.Carousel($('#carouselWithCallbacks'), {
+      var carouselWithCallbacks = new Carousel($('#carouselWithCallbacks'), {
         visibleItems: 1,
         slideWidth: 400,
         slideHeight: 200, 
