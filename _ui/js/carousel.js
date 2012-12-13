@@ -195,8 +195,10 @@ Carousel.prototype = {
 	},
 
 	onPaginationItemClick: function(e){
+		var newIndex = $(e.currentTarget).index() + this.slideAdjustment;
+
 		e.preventDefault();
-		this.changeToSlide($(e.currentTarget).index() + this.slideAdjustment);
+		if(newIndex !== this.currentSlide){ this.changeToSlide(newIndex); }
 	},
 
 	/**
