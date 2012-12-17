@@ -191,14 +191,16 @@ Carousel.prototype = {
 
 	onPaginationGroupClick: function(e){
 		e.preventDefault();
-		this.changeToSlide(($(e.currentTarget).index() * this.options.visibleItems) + this.slideAdjustment);
+		if(!this.isAnimating){
+			this.changeToSlide(($(e.currentTarget).index() * this.options.visibleItems) + this.slideAdjustment);
+		}
 	},
 
 	onPaginationItemClick: function(e){
 		var newIndex = $(e.currentTarget).index() + this.slideAdjustment;
 
 		e.preventDefault();
-		if(newIndex !== this.currentSlide){ this.changeToSlide(newIndex); }
+		if(newIndex !== this.currentSlide && !this.isAnimating){ this.changeToSlide(newIndex); }
 	},
 
 	/**
