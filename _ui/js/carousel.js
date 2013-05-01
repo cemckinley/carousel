@@ -16,7 +16,7 @@
  */
 
 var Carousel = function(container, options){
-	
+
 	this.containerList = container;
 	this.options = $.extend({
 		visibleItems: 1,					// how many slides you want visible at a time
@@ -30,8 +30,8 @@ var Carousel = function(container, options){
 		groupSlides: true,					// false: 1 pagination link for each slide. true: 1 pagination link for each set of visible slides.
 		transitionSpeed: 400,				// time taken to animate between slides
 		slideEasing: 'easeOutExpo',			// easing function to use on slide transitions - choose from jquery easing plugin list
-		beforeSlideChange: '',				// optional callback function to call after a click event happened, but before slide changes - passes arg for pending slide index, previous slide index, and callback for next step
-		afterSlideChange: '',				// optional callback function to call after slide change is complete - passes arg slide index, and previous slide index
+		beforeSlideChange: null,				// optional callback function to call after a click event happened, but before slide changes - passes arg for pending slide index, previous slide index, and callback for next step
+		afterSlideChange: null,				// optional callback function to call after slide change is complete - passes arg slide index, and previous slide index
 		prevNextButtons: true,				// if true, dynamically generates prev/next buttons
 		prevButtonClass: 'carouselBtnPrev',	// css class for previous button
 		nextButtonClass: 'carouselBtnNext', // css class for next button
@@ -40,15 +40,15 @@ var Carousel = function(container, options){
 		auto: false,						// should the carousel auto-rotate. Requires infinite:true. (auto rotation stops on prev/next or pagination click)
 		autoDelay: 7000						// timing for auto rotation in ms
 	}, options || {});
-	
+
 	this.init();
 };
 
 
 Carousel.prototype = {
-	
+
 	init: function(){
-		
+
 		// el refs
 		this.slides = this.containerList.children('li');
 		// the following els are (optionally) defined in setup
@@ -59,26 +59,23 @@ Carousel.prototype = {
 		this.prevButton = null;
 		this.nextButton = null;
 
-
 		// shared props
 		this.totalSlides = this.slides.length;
 		this.currentSlide = 0;
 		this.slideAdjustment = 0;
 		this.isAnimating = false;
 		this.autoInterval = null;
-				
+
 		// setup
 		if(this.options.visibleItems <= 1){ this.options.groupSlides = false; } // make sure group slides is turned off if there is only one slide visible at a time
 
 		this.setupSlides();
-		
+
 		if(this.options.pagination && this.totalSlides > this.options.visibleItems){ this.setupPagination(); }
 		if(this.options.prevNextButtons === true && ( this.totalSlides > this.options.visibleItems || this.options.forcePrevNextButtons) ){ this.addNextPrevArrows(); }// add back/next arrows if true in settings, and if number slides is greater than amount visible
 		if(this.options.auto && this.options.infinite){ this.startAutoRotation(); }// if auto rotation (only possible in an infinite scenario)
-
-		delete this.init;
 	},
-	
+
 	/**
 	 * set up slides in carousel format
 	 */
@@ -104,7 +101,7 @@ Carousel.prototype = {
 				'overflow': 'hidden',
 				'margin': '0px ' + Math.ceil(this.options.slideSpacing/2) + 'px 0px ' + Math.floor(this.options.slideSpacing/2) + 'px' // if spacing is an odd number, rounds self.options.slideSpacing/2 up on one side and down on the other
 			};
-		
+
 		this.containerList.wrap($('<div class="' + this.options.wrapperClass + '" />'));
 		this.containerWrapper = this.containerList.parent();
 
@@ -114,53 +111,51 @@ Carousel.prototype = {
 		this.containerWrapper.css(wrapperCss);
 		this.containerList.css(containerListCss);
 		this.slides.css(slideCss);
-		
+
 		if(this.options.infinite && (this.totalSlides > this.options.visibleItems || this.options.forcePrevNextButtons) ){ // if inifite carousel, run addition setup items to support infinite.
 			this.setupInfinite();
 		}
-
-		delete this.setupSlides;
 	},
-	
+
 	/**
 	 * additional setup steps for inifinite carousel
 	 * duplicates options.visibleItems number slides at the end and beginning of the carousel to prep for clicks past the first and last slides
 	 */
 	setupInfinite: function(){
-		
+
 		for(var i = 0, len = this.options.visibleItems; i <= len; i++){ // grab first number of slides and append to end of carousel
 			this.containerList.append(this.slides.eq(i).clone());
 		}
-		
+
 		for(var j = this.totalSlides - 1; j >= this.totalSlides - this.options.visibleItems; j--){ // grab last number of slides and prepend to carousel
 			this.containerList.prepend(this.slides.eq(j).clone());
 		}
-		
+
 		this.containerList.css({
 			'left': ((this.options.slideWidth + this.options.slideSpacing) * this.options.visibleItems * -1) - (this.options.slideSpacing / 2) + 'px',
 			'width': ((this.totalSlides + (this.options.visibleItems * 2)) * this.options.slideWidth) + ((this.totalSlides + (this.options.visibleItems * 2)) * this.options.slideSpacing) + 'px'
 		});
-		
+
 		this.slides = this.containerList.children('li'); // redefine reference to slides with added slides
 		this.currentSlide = this.currentSlide + this.options.visibleItems;
 	},
-	
+
 	/**
 	 * set up numerical pagination for slides. If you dont want numbers to show, can hide the inner <span> with css.
 	 */
 	setupPagination: function(){
 		var self = this;
-		
+
 		if (this.options.infinite){ this.slideAdjustment = this.options.visibleItems; }
-		
+
 		if(typeof this.options.pagination == 'object'){ // if user passed in self-created pagination jquery object, use that and set references
 			this.paginationContainer = this.options.pagination;
 			this.pageButtons = this.paginationContainer.children('li');
 			this.updatePagination(this.currentSlide);
-		
+
 		}else{ // otherwise build pagination elements
 			this.paginationContainer = $('<ol class="' + this.options.paginationClass + '"></ol>');
-			
+
 			if(this.options.groupSlides){
 				for(var i = 1, len = Math.ceil(this.totalSlides / this.options.visibleItems); i <= len; i++){
 					this.paginationContainer.append('<li><a href="#"><span>' + i + '</span></a></li>');
@@ -170,25 +165,27 @@ Carousel.prototype = {
 					this.paginationContainer.append('<li><a href="#"><span>' + j + '</span></a></li>');
 				}
 			}
-			
+
 			this.navWrapper.append(this.paginationContainer);
 			this.paginationContainer.wrap('<div class="' + this.options.paginationClass + 'Wrap" />'); // add a wrapping div for additional styling options
 			this.pageButtons = this.paginationContainer.children('li');
 		}
-		
+
 		this.updatePagination(this.currentSlide);
-		
+
 		// event handlers
 		if(this.options.groupSlides){
 			this.paginationContainer.on('click', 'li', $.proxy(this.onPaginationGroupClick, this));
-		
+
 		}else{
 			this.paginationContainer.on('click', 'li', $.proxy(this.onPaginationItemClick, this));
 		}
-		
-		delete this.setupPagination;
 	},
 
+	/**
+	 * fired on user click on pagination item when pagination items control a whole group of slides
+	 * @param  {Object} e [dom event]
+	 */
 	onPaginationGroupClick: function(e){
 		e.preventDefault();
 		if(!this.isAnimating){
@@ -196,6 +193,10 @@ Carousel.prototype = {
 		}
 	},
 
+	/**
+	 * fired on user click on a pagination item when item corresponds to one slide
+	 * @param  {Object} e [dom event]
+	 */
 	onPaginationItemClick: function(e){
 		var newIndex = $(e.currentTarget).index() + this.slideAdjustment;
 
@@ -209,18 +210,18 @@ Carousel.prototype = {
 	 */
 	addNextPrevArrows: function(){
 		var self = this;
-			
+
 		this.prevButton = $('<div class="' + this.options.prevButtonClass + '"><a href="#"><span>Prev</span></a></div>');
 		this.nextButton = $('<div class="' + this.options.nextButtonClass + '"><a href="#"><span>Next</span></a></div>');
-		
+
 		this.navWrapper.prepend(this.prevButton);
 		this.navWrapper.append(this.nextButton);
-		
+
 		this.prevButton.on('click', $.proxy(this.onPrevBtnClick, this));
 		this.nextButton.on('click', $.proxy(this.onNextBtnClick, this));
-		
+
 		this.updatePrevNext(this.currentSlide);
-		
+
 		delete this.addNextPrevArrows;
 	},
 
@@ -253,37 +254,37 @@ Carousel.prototype = {
 	 */
 	startAutoRotation: function(){
 		var self = this;
-		
+
 		function startInterval(){
 			self.autoInterval = setInterval(function(){
 				self.changeToSlide(self.currentSlide + self.options.visibleItems);
 			}, self.options.autoDelay);
 		}
-		
+
 		function stopInterval(){
 			clearInterval(self.autoInterval);
 		}
-		
+
 		startInterval();
-		
+
 		this.navWrapper.on('click', 'a', stopInterval);
-		
+
 		// prevent queue from building when window/browser tab is not focused
 		$(window).blur(stopInterval);
 		$(window).focus(startInterval);
-		
+
 		delete this.startAutoRotation;
 	},
-	
+
 	/**
 	 * delegate actions to change slide (or not), including calling any 'beforeSlideChange' function that was specified
 	 * @param  {int} slideIndex [index of slide to change to]
 	 */
 	changeToSlide: function(slideIndex){
 		var delegateChange;
-		
+
 		if(this.totalSlides > this.options.visibleItems || this.options.forcePrevNextButtons){ // don't do slide change actions if total slides is <= to amount visible
-			
+
 			if(!this.options.infinite){
 				if(slideIndex > this.totalSlides - this.options.visibleItems && !this.options.groupSlides){ // if back/next click causes slide index to be greater than total slides, set slideIndex to last slide
 					slideIndex = this.totalSlides - this.options.visibleItems;
@@ -291,11 +292,11 @@ Carousel.prototype = {
 					slideIndex = 0;
 				}
 			}
-			
+
 			if(!this.options.groupSlides && slideIndex != this.currentSlide || this.options.groupSlides && slideIndex < this.totalSlides || this.options.infinite){ // dont run if the item clicked is the current, or if slide grouping is turned on and slide index is past the total slide count. Always run if infinite.
 				this.beforeSlideChange(slideIndex);
 			}
-			
+
 		}
 	},
 
@@ -323,7 +324,7 @@ Carousel.prototype = {
 					}
 				});
 			};
-	
+
 		}else{
 			this.beforeSlideChange = function(index){
 				self.isAnimating = true;
@@ -350,7 +351,7 @@ Carousel.prototype = {
 		var self = this;
 
 		this.pageButtons.removeClass('active');
-		
+
 		if(this.options.infinite){ // if infinite = true & auto rotate is on, make sure pagination highlights correctly as slides loop back to the beginning
 			if(slideIndex >= this.totalSlides){
 				slideIndex = slideIndex - this.totalSlides;
@@ -358,11 +359,11 @@ Carousel.prototype = {
 				slideIndex = this.totalSlides - slideIndex;
 			}
 		}
-		
+
 		if(this.options.groupSlides){
 			slideIndex = Math.floor(slideIndex / this.options.visibleItems);
 			this.pageButtons.eq(slideIndex).addClass('active');
-			
+
 		}else{
 			for(var i = 0, len = this.options.visibleItems; i < len; i++){
 				this.pageButtons.eq(i + slideIndex).addClass('active');
@@ -370,44 +371,44 @@ Carousel.prototype = {
 		}
 
 	},
-	
+
 	/**
 	 * update next/prev buttons to reflect current position in the carousel, called by beforeSlideChange
 	 * @param  {int} slideIndex [index of slide being changed to]
 	 */
 	updatePrevNext: function(slideIndex){
-		
+
 		this.prevButton.removeClass('disabled');
 		this.nextButton.removeClass('disabled');
-		
+
 		if(slideIndex <= 0){
 			this.prevButton.addClass('disabled');
 		}else if(slideIndex >= this.totalSlides - this.options.visibleItems){
 			this.nextButton.addClass('disabled');
 		}
 	},
-	
+
 	/**
 	 * animation to move to new slide, called by beforeSlideChange
 	 * @param  {int} slideIndex [index of slide being changed]
 	 */
 	animateSlide: function(slideIndex){
-		var self = this;
-		
-		var newXCoord = ((this.options.slideWidth + this.options.slideSpacing) * slideIndex * -1) - (this.options.slideSpacing / 2) + 'px';
+		var self = this,
+			newXCoord = ((this.options.slideWidth + this.options.slideSpacing) * slideIndex * -1) - (this.options.slideSpacing / 2) + 'px';
+
 		this.containerList.animate({
 			left: newXCoord
 		}, this.options.transitionSpeed, this.options.slideEasing, function(){
 			self.afterSlideChange(slideIndex);
 		});
 	},
-	
+
 	/**
 	 * actions to take after slide has changed, called by animateSlide
 	 * @param  {int} slideIndex [index of slide that was changed]
 	 */
 	afterSlideChange: function(slideIndex){
-		
+
 		if(this.options.infinite){
 			if(slideIndex < this.options.visibleItems){ // if user clicked 'prev' past the first slide, secretly jump to the same slides at the end and set slideIndex
 				this.containerList.css({
@@ -421,11 +422,11 @@ Carousel.prototype = {
 				slideIndex = slideIndex - this.totalSlides;
 			}
 		}
-		
+
 		if(typeof this.options.afterSlideChange == 'function'){
 			this.options.afterSlideChange(slideIndex, this.currentSlide);
 		}
-		
+
 		this.currentSlide = slideIndex;
 		this.isAnimating = false;
 	}
