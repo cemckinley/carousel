@@ -357,6 +357,8 @@ Carousel.prototype = {
 				slideIndex = slideIndex - this.totalSlides;
 			}else if(slideIndex < 0){
 				slideIndex = this.totalSlides - slideIndex;
+			}else{
+				slideIndex = slideIndex - this.options.visibleItems;
 			}
 		}
 
