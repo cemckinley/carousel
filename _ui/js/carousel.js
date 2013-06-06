@@ -87,9 +87,11 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 	startAutoRotation: function(){
 		var self = this;
 
-		this.autoInterval = setInterval(function(){
-			self.changeToSlide(self.currentSlide + self.options.visibleItems);
-		}, self.options.autoDelay);
+		if(!this.autoInterval){ // FF will allow duplicate intervals, so check first
+			this.autoInterval = setInterval(function(){
+				self.changeToSlide(self.currentSlide + self.options.visibleItems);
+			}, self.options.autoDelay);
+		}
 	},
 
 	/**
@@ -97,6 +99,7 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 	 */
 	stopAutoRotation: function(){
 		clearInterval(this.autoInterval);
+		this.autoInterval = null;
 	},
 
 	/**
