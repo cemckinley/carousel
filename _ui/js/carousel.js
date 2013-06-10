@@ -149,6 +149,14 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 		return virtualIndex;
 	},
 
+	/**
+	 * get current/active slide of carousel (if infinite, index will count the duplicate slides at the beginning of the list)
+	 * @return {Int} [slide index, zero-based]
+	 */
+	getActiveIndex: function(){
+		return this.currentSlide();
+	},
+
 
 	/** PRIVATE **/
 
@@ -224,32 +232,47 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 
 		if (this.options.infinite){ this.slideAdjustment = this.options.visibleItems; }
 
-		if(typeof this.options.pagination == 'object'){ // if user passed in self-created pagination jquery object, use that and set references
+		// if user passed in self-created pagination jquery object, use that and set references
+		if(typeof this.options.pagination == 'object'){
 			this.paginationContainer = this.options.pagination;
 			this.pageButtons = this.paginationContainer.children('li');
 			this._updatePagination(this.currentSlide);
 
-		}else{ // otherwise build pagination elements
-			this.paginationContainer = $('<ol class="' + this.options.paginationClass + '"></ol>');
-
-			if(this.options.groupSlides){
-				for(var i = 1, len = Math.ceil(this.totalSlides / this.options.visibleItems); i <= len; i++){
-					this.paginationContainer.append('<li><a href="#"><span>' + i + '</span></a></li>');
-				}
-			}else{
-				for(var j = 1, len2 = this.totalSlides; j <= len2; j++){
-					this.paginationContainer.append('<li><a href="#"><span>' + j + '</span></a></li>');
-				}
-			}
-
-			this.navWrapper.append(this.paginationContainer);
-			this.paginationContainer.wrap('<div class="' + this.options.paginationClass + 'Wrap" />'); // add a wrapping div for additional styling options
-			this.pageButtons = this.paginationContainer.children('li');
+		// otherwise build pagination elements
+		}else{
+			this._buildPaginationElements();
 		}
 
 		this._updatePagination(this.currentSlide);
+		this._addNavigationEventHandlers();
+	},
 
-		// event handlers
+	/**
+	 * Build dom elements (ordered list) for pagination and append to navigation container
+	 */
+	_buildPaginationElements: function(){
+		this.paginationContainer = $('<ol class="' + this.options.paginationClass + '"></ol>');
+
+		if(this.options.groupSlides){
+			for(var i = 1, len = Math.ceil(this.totalSlides / this.options.visibleItems); i <= len; i++){
+				this.paginationContainer.append('<li><a href="#"><span>' + i + '</span></a></li>');
+			}
+		}else{
+			for(var j = 1, len2 = this.totalSlides; j <= len2; j++){
+				this.paginationContainer.append('<li><a href="#"><span>' + j + '</span></a></li>');
+			}
+		}
+
+		this.navWrapper.append(this.paginationContainer);
+		this.paginationContainer.wrap('<div class="' + this.options.paginationClass + 'Wrap" />'); // add a wrapping div for additional styling options
+		this.pageButtons = this.paginationContainer.children('li');
+	},
+
+	/**
+	 * Add event handlers for list items in pagination
+	 */
+	_addNavigationEventHandlers: function(){
+
 		if(this.options.groupSlides){
 			this.paginationContainer.on('click', 'li', $.proxy(this._onPaginationGroupClick, this));
 
@@ -289,8 +312,8 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 	},
 
 	/**
-	 * actions to take before the slide change takes place, called by changeToSlide
-	 * redefines itself on first run based on user settings
+	 * method called before slide change - user defined in options, or default
+	 * Memoizes which action to take, before calling _continueSlideChange
 	 * @param  {int} slideIndex [index of slide being changed]
 	 */
 	_beforeSlideChange: function(slideIndex){
@@ -299,36 +322,38 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 		// memoize which action to take, if a beforeSlideChange function was provided or not
 		if(typeof this.options.beforeSlideChange == 'function'){
 			this._beforeSlideChange = function(index){
-				self.isAnimating = true;
 
-				self.options.beforeSlideChange(index, self.currentSlide, function(){ // call optional beforeSlideChange function if one was passed in, define the callback for that function
-					self._animateSlide(index);
-					if(self.options.pagination){
-						self._updatePagination(index);
-					}
-
-					if(self.options.prevNextButtons === true && !self.options.infinite && self.totalSlides > self.options.visibleItems){
-						self._updatePrevNext(index);
-					}
+				// call optional beforeSlideChange function if one was passed in, define the callback for that function
+				self.options.beforeSlideChange(index, self.currentSlide, function(){
+					self._continueSlideChange(index);
 				});
 			};
 
 		}else{
 			this._beforeSlideChange = function(index){
-				self.isAnimating = true;
-
-				self._animateSlide(index);
-				if(self.options.pagination){
-					self._updatePagination(index);
-				}
-
-				if(self.options.prevNextButtons === true && !self.options.infinite && self.totalSlides > self.options.visibleItems){ // if infinite carousel, prev/next buttons never change state
-					self._updatePrevNext(index);
-				}
+				self._continueSlideChange(index);
 			};
 		}
 
 		this._beforeSlideChange(slideIndex);
+	},
+
+	/**
+	 * Continue with slide change events, after any optional beforeSlideChange function was called
+	 * @param  {Int} slideIndex [index of slide being changed]
+	 */
+	_continueSlideChange: function(slideIndex){
+		this.isAnimating = true;
+		this._animateSlide(slideIndex);
+
+		if(this.options.pagination){
+			this._updatePagination(slideIndex);
+		}
+
+		// if infinite carousel, prev/next buttons never change state
+		if(this.options.prevNextButtons === true && !this.options.infinite && this.totalSlides > this.options.visibleItems){
+			this._updatePrevNext(slideIndex);
+		}
 	},
 
 	/**
@@ -446,6 +471,10 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 		if(newIndex !== this.currentSlide && !this.isAnimating){ this.changeToSlide(newIndex); }
 	},
 
+	/**
+	 * fired on user click on previous button, decrements slide index and calls slide change
+	 * @param  {Object} e [dom event]
+	 */
 	_onPrevBtnClick: function(e){
 		e.preventDefault();
 
@@ -458,6 +487,10 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 		}
 	},
 
+	/**
+	 * fired on user click on next button, increments slide index and calls slide change
+	 * @param  {Object} e [dom event]
+	 */
 	_onNextBtnClick: function(e){
 		e.preventDefault();
 
