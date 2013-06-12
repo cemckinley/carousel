@@ -41,7 +41,7 @@ var Carousel = function(container, options){
 		autoDelay: 7000						// timing for auto rotation in ms
 	}, options || {});
 
-	this.init();
+	this._init();
 };
 
 
@@ -49,48 +49,18 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 
 	/** PUBLIC API **/
 
-	init: function(){
-
-		// el refs
-		this.slides = this.containerList.children('li');
-		// the following els are (optionally) defined in setup
-		this.containerWrapper = null;
-		this.navWrapper = null;
-		this.paginationContainer = null;
-		this.pageButtons = null;
-		this.prevButton = null;
-		this.nextButton = null;
-
-		// shared props
-		this.totalSlides = this.slides.length;
-		this.currentSlide = 0;
-		this.slideAdjustment = 0;
-		this.isAnimating = false;
-		this.autoInterval = null;
-
-		// setup
-		if(this.options.visibleItems <= 1){ this.options.groupSlides = false; } // make sure group slides is turned off if there is only one slide visible at a time
-
-		this._setupSlides();
-
-		if(this.options.pagination && this.totalSlides > this.options.visibleItems){ this._setupPagination(); }
-		if(this.options.prevNextButtons === true && ( this.totalSlides > this.options.visibleItems || this.options.forcePrevNextButtons) ){ this._addNextPrevArrows(); }// add back/next arrows if true in settings, and if number slides is greater than amount visible
-		if(this.options.auto && this.options.infinite){ // if auto rotation (only possible in an infinite scenario)
-			this._setupAutoRotation();
-			this.startAutoRotation();
-		}
-	},
-
 	/**
 	 * Start interval for auto-rotation
 	 */
 	startAutoRotation: function(){
 		var self = this;
 
-		if(!this.autoInterval){ // FF will allow duplicate intervals, so check first
+		if(!this.autoInterval && this.options.infinite){ // FF will allow duplicate intervals, so check first
 			this.autoInterval = setInterval(function(){
 				self.changeToSlide(self.currentSlide + self.options.visibleItems);
 			}, self.options.autoDelay);
+
+			if(!this.autoIsSetup){ this._setupAutoRotation(); }
 		}
 	},
 
@@ -153,12 +123,48 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 	 * get current/active slide of carousel (if infinite, index will count the duplicate slides at the beginning of the list)
 	 * @return {Int} [slide index, zero-based]
 	 */
-	getActiveIndex: function(){
+	getActiveSlideIndex: function(){
 		return this.currentSlide();
 	},
 
 
 	/** PRIVATE **/
+
+	/**
+	 * setup/kickoff for carousel. Called in constructor function.
+	 */
+	_init: function(){
+
+		// el refs
+		this.slides = this.containerList.children('li');
+		// the following els are (optionally) defined in setup
+		this.containerWrapper = null;
+		this.navWrapper = null;
+		this.paginationContainer = null;
+		this.pageButtons = null;
+		this.prevButton = null;
+		this.nextButton = null;
+
+		// shared props
+		this.totalSlides = this.slides.length;
+		this.currentSlide = 0;
+		this.slideAdjustment = 0;
+		this.isAnimating = false;
+		this.autoInterval = null;
+		this.autoIsSetup = false;
+
+		// setup
+		if(this.options.visibleItems <= 1){ this.options.groupSlides = false; } // make sure group slides is turned off if there is only one slide visible at a time
+
+		this._setupSlides();
+
+		if(this.options.pagination && this.totalSlides > this.options.visibleItems){ this._setupPagination(); }
+		if(this.options.prevNextButtons === true && ( this.totalSlides > this.options.visibleItems || this.options.forcePrevNextButtons) ){ this._addNextPrevArrows(); }// add back/next arrows if true in settings, and if number slides is greater than amount visible
+		if(this.options.auto && this.options.infinite){ // if auto rotation (only possible in an infinite scenario)
+			this._setupAutoRotation();
+			this.startAutoRotation();
+		}
+	},
 
 	/**
 	 * set up slides in carousel format
@@ -309,6 +315,8 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 		// prevent queue from building when window/browser tab is not focused
 		$(window).blur($.proxy(this.stopAutoRotation, this));
 		$(window).focus($.proxy(this.startAutoRotation, this));
+
+		this.autoIsSetup = true;
 	},
 
 	/**
