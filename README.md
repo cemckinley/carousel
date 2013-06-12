@@ -18,7 +18,7 @@ When working with slide indexes in the optional before/after slide change functi
 
 ## Demo
 
-See examples here
+http://cemckinley.github.io/carousel/
 
 ## Dependencies
 * jQuery 1.7 or later
