@@ -97,6 +97,34 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 	},
 
 	/**
+	 * Set slide index/carousel position instantly without any animations or callbacks
+	 * @param {Integer} slideIndex    Index of slide you want active
+	 */
+	setVisibleSlide: function(slideIndex){
+		var newXCoord = ((this.options.slideWidth + this.options.slideSpacing) * slideIndex * -1) - (this.options.slideSpacing / 2) + 'px';
+
+		// do nothing if index is invalid
+		if( typeof slideIndex !== 'number' || slideIndex < 0 || slideIndex >= this.totalSlides ){
+			console.log('invalid slide index', slideIndex);
+			return;
+		}
+
+		if(this.options.pagination){
+			this._updatePagination(slideIndex);
+		}
+		// if infinite carousel, prev/next buttons never change state
+		if(this.options.prevNextButtons === true && !this.options.infinite && this.totalSlides > this.options.visibleItems){
+			this._updatePrevNext(slideIndex);
+		}
+
+		this.containerList.css({
+			left: newXCoord
+		});
+
+		this.currentSlide = slideIndex;
+	},
+
+	/**
 	 * get 'virtual' (user-visible) index for a slide index in the carousel, to adjust for cloned slides in infinite carousel
 	 * @param  {Int} slideIndex [active slide index of carousel/slide index to adjust for]
 	 * @return {Int}            [adjusted index to remove duplicate slides from the count]
@@ -124,7 +152,7 @@ Carousel.prototype = $.extend(Carousel.prototype, {
 	 * @return {Int} [slide index, zero-based]
 	 */
 	getActiveSlideIndex: function(){
-		return this.currentSlide();
+		return this.currentSlide;
 	},
 
 
